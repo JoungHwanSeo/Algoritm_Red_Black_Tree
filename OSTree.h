@@ -20,7 +20,9 @@ public:
 	void InsertHazard(Node* node);
 	
 	int OSDelete(int key);
-	void DeleteHazard(Node* dnode,Node* cnode, bool left = true);
+	//void DeleteHazard(Node* dnode,Node* cnode, bool left = true);
+
+	void DeleteHazard(Node* pnode, Node* cnode,int dcolor ,bool left);
 	//left가 true이면 삭제 노드가 부모 노드의 왼쪽자식인 경우
 	//cnode는 삭제할 노드의 자식 노드.. 오른쪽/왼쪽일수도 있으므로 지정해줌
 

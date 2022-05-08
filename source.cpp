@@ -8,22 +8,14 @@ int main(void) {
 		cout << tree->OSInsert(i) << endl;
 	}
 
+	for (int i = 3; 3 <= 5; i++) {
+		tree->OSDelete(i);
+	}
+	tree->show(tree->getroot());
+
 	//cout << tree->findmin(tree->getroot())->GetData();
 
 }
 
 
 
-Node* OSTree::IsKeyExist(int key) {
-	Node* cnode = root;
-	while (cnode != leaf) {
-		int Current = cnode->GetData();
-		if (Current == key)
-			return cnode;
-		else if (Current < key)
-			cnode = cnode->getright();
-		else
-			cnode = cnode->getleft();
-	}
-	return nullptr;
-}
