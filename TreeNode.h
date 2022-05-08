@@ -11,6 +11,8 @@ class TreeNode
 {
 public:
 	TreeNode(int data = 0, int color = BLACK); //dafault는 black
+	//~TreeNode(); //이 경우 TreeNode*는 여기서 new해주는 것이 아니라 다른데서 생긴 걸
+	//받아오므로 굳이 Destructor필요 x
 
 	int GetSize();
 	int GetColor();

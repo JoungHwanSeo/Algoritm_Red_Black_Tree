@@ -34,12 +34,27 @@ Node* OSTree::IsKeyExist_DEL(int key) {
 	return nullptr;
 }
 
-void OSTree::Connect(Node* del, Node* rep) { //rep은 이전 위치에서 전부 독립되어 나와야함
-	if (del->getparent() == nullptr) {
-		
+void OSTree::Connect(Node* pnode, Node* dnode,Node* cnode, bool pleft) { //rep은 이전 위치에서 전부 독립되어 나와야함
+	//Node* byenode = dnode;
+	if (cnode != leaf) {
+		if (pleft) {
+			pnode->setleft(cnode);
+			cnode->setparent(pnode);
+		}
+		else {
+			pnode->setright(cnode);
+			cnode->setparent(pnode);
+		}
 	}
-	/////////////
-
+	else { // dnode가 실질적 리프노드인 경우
+		if (pleft) {
+			pnode->setleft(leaf);
+		}
+		else {
+			pnode->setright(leaf);
+		}
+	}
+	//delete dnode;
 }
 
 Node* OSTree::findmin_DEL(Node* rnode) {
@@ -333,9 +348,63 @@ int OSTree::OSDelete(int key) {
 }
 
 void OSTree::DeleteHazard(Node* dnode,Node* cnode , bool left) {
+	//delete dnode는 맨 마지막에 실행!!!!!!!!!!!
+	int COLOR = dnode->GetColor();
 	if (left) { //삭제노드가 부모노드의 왼쪽 자식
-		if (dnode->GetColor() == RED) {
+		Connect(dnode->getparent(), dnode, cnode, true);
+		//일단 RB상관 없이 노드 삭제하고 이어줌
+		if (COLOR == RED) {
+			//아무것도 할 필요가 없음!
+		}
+		else { //삭제한 노드가 BLACK일시
+			if (cnode->GetColor() == RED) {
+				cnode->setcolor(BLACK);
+			}
+			else { //삭제노드와 그 자식노드가 모두 BLACK
+				Node* pnode = cnode->getparent();
+				Node* snode = pnode->getright();
+				Node* lnode = snode->getleft();
+				Node* rnode = snode->getright();
+				int pcolor = pnode->GetColor();
+				int scolor = snode->GetColor();
+				int lcolor = lnode->GetColor();
+				int rcolor = rnode->GetColor();
+				if (pcolor == RED && !snode && !lnode && !rnode) {
+					//case 1
+					//BLACK은 0... P만 red인 경우
+					pnode->setcolor(BLACK);
+					snode->setcolor(RED);
+				}
+				else if (scolor == BLACK && rcolor == RED) {
+					//case 2
+					Rotateleft(pnode);
+					pnode->setcolor(scolor);
+					snode->setcolor(pcolor);
+					rnode->setcolor(BLACK);
+				}
+				else if (!scolor && lcolor && !rcolor) {
+					//case 3
+					Rotateright(snode);
+					lnode->setcolor(scolor);
+					snode->setcolor(lcolor);
+					
+					int changedscolor = lcolor;
+					int changedlcolor = scolor;
 
+					//여기서는 case 2와 같이 처리
+					Rotateleft(pnode);
+					pnode->setcolor(changedlcolor);
+					lnode->setcolor(pcolor);
+					snode->setcolor(BLACK);
+				}
+				else if (!pcolor && !scolor && !lcolor && !rcolor) {
+					//case 4 전부 BLACK
+					snode->setcolor(RED);
+					//이 경우 dnode의 문제가 pnode로 올라감 
+				}
+			}
 		}
 	}
+
+	delete dnode;
 }

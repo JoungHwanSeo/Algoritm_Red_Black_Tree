@@ -9,8 +9,10 @@ public:
 	Node* getroot();
 	Node* IsKeyExist_DEL(int key); //없는경우 nullptr return, 있으면 해당 노드 포인터 return
 	//이는 Delete과정에서 사용하여 size가 줄어듦...
-	void Connect(Node* del, Node* rep); // del이 삭제되고 rep이 이 자리를 대체할 때
-	Node* findmin_DEL(Node* rnode); //이것도 Delete과정에서 사용
+	void Connect(Node* pnode,Node* dnode,Node* cnode,bool pleft); 
+	//dnode가 삭제되어 pnode와 cnode가 이어질 때
+	Node* findmin_DEL(Node* rnode); 
+	//이것도 Delete과정에서 사용
 	void show(Node* node);
 	void Rotateleft(Node* node);
 	void Rotateright(Node* node);
