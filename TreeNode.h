@@ -22,6 +22,8 @@ public:
 	void setparent(TreeNode* parent);
 	void setsize(int size);
 	void setcolor(int color);
+
+	void sizegrow(int delta);
 	//void AddLeft(TreeNode* left); //삽입노드는 RED
 private:
 	int Color;

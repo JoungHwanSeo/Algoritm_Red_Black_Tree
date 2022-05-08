@@ -1,8 +1,2 @@
 ﻿  OSTree.cpp
-C:\Users\jungh\source\repos\Algorithm_HW_02\Algorithm_HW_02\OSTree.cpp(12,1): error C2059: 구문 오류: '}'
-C:\Users\jungh\source\repos\Algorithm_HW_02\Algorithm_HW_02\OSTree.cpp(12,1): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.
-  TreeNode.cpp
-C:\Users\jungh\source\repos\Algorithm_HW_02\Algorithm_HW_02\TreeNode.cpp(27,6): error C2062: 예기치 않은 'void' 형식입니다.
-C:\Users\jungh\source\repos\Algorithm_HW_02\Algorithm_HW_02\TreeNode.cpp(27,40): error C2143: 구문 오류: ';'이(가) '{' 앞에 없습니다.
-C:\Users\jungh\source\repos\Algorithm_HW_02\Algorithm_HW_02\TreeNode.cpp(27,40): error C2447: '{': 함수 헤더가 없습니다. 이전 스타일의 형식 목록입니까?
-  코드를 생성하고 있습니다...
+  Algorithm_HW_02.vcxproj -> C:\Users\jungh\source\repos\Algorithm_HW_02\Debug\Algorithm_HW_02.exe

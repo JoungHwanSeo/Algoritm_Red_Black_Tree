@@ -6,8 +6,12 @@
 class OSTree {
 public:
 	OSTree();
-	bool OSInsert(int key);
 	void Rotateleft(Node* node);
+	void Rotateright(Node* node);
+	int OSInsert(int key);
+	void InsertHazard(Node* node);
+
+
 private:
 	Node* root;
 	Node* leaf;
