@@ -30,6 +30,14 @@ void OSTree::show(Node* node) {
 
 void OSTree::Rotateleft(Node* node) {
 	Node* cnode = node->getright();
+
+	int size = node->GetSize();
+	int size_1 = node->getleft()->GetSize();
+	int size_2 = cnode->getleft()->GetSize();
+	node->setsize(size_1 + size_2 + 1);
+	cnode->setsize(size);
+
+
 	node->setright(cnode->getleft());
 	if (cnode->getleft() != leaf) {
 		//leaf의 parent는 사실상 여러개 있으므로 leaf의 parent는 연결하면 안됨
@@ -49,11 +57,21 @@ void OSTree::Rotateleft(Node* node) {
 	}
 	node->setparent(cnode);
 	cnode->setleft(node);
+
+
 }
 
 void OSTree::Rotateright(Node* node) {
 	//Rotate Left와 같은 방법으로 구현
 	Node* cnode = node->getleft();
+
+	int size = node->GetSize();
+	int size_1 = node->getright()->GetSize();
+	int size_2 = cnode->getright()->GetSize();
+
+	node->setsize(size_1 + size_2 + 1);
+	cnode->setsize(size);
+
 	node->setleft(cnode->getright());
 	if (cnode->getright() != leaf) {
 		(cnode->getright())->setparent(node);
@@ -86,7 +104,7 @@ int OSTree::OSInsert(int key) {
 			printf("Key overalp\n");
 			return 0; // 이미 있는 원소일시 0을 return
 		}
-		if (Current < key) {
+		if (Current > key) {
 			cnode = cnode->getleft();
 		}
 		else {
@@ -122,8 +140,11 @@ int OSTree::OSInsert(int key) {
 		nnode->setright(leaf);
 	}
 
-	//삽입시 생기는 문제를 여기서 해결
-	InsertHazard(nnode);
+	if (pnode->getparent() == nullptr)
+		return key;
+	else
+		InsertHazard(nnode); //삽입시 생기는 문제를 여기서 해결
+	
 	return key;
 }
 
@@ -161,7 +182,7 @@ void OSTree::InsertHazard(Node* inode) {
 				ppnode->setcolor(RED);
 				InsertHazard(ppnode); // ppnode에서 재귀적으로 해결
 			}
-			else if (snode->GetColor() == BLACK) {
+			else {
 				//case 2
 				if (inode == pnode->getleft()) {
 					//삽입 노드가 부모의 left인 경우
@@ -169,35 +190,59 @@ void OSTree::InsertHazard(Node* inode) {
 					Rotateright(ppnode);
 					pnode->setcolor(BLACK);
 					ppnode->setcolor(RED);
-					//size 조정...
+					/*size 조정...
 					int ppsize = ppnode->GetSize();
 					int size_1 = pnode->getright()->GetSize();
 					int size_2 = snode->GetSize();
 					pnode->setsize(ppsize);
-					ppnode->setsize(size_1 + size_2 + 1);
+					ppnode->setsize(size_1 + size_2 + 1);*/
 				}
 				else {
 					//삽입 노드가 부모의 right인 경우
 					//case 2-1
 					Rotateleft(pnode);
-					//size 조정
+					/*size 조정
 					int psize = pnode->GetSize();
 					int size_1 = pnode->getleft()->GetSize();
 					int size_2 = inode->getleft()->GetSize();
 					pnode->setsize(size_1 + size_2 + 1);
-					inode->setsize(psize);
+					inode->setsize(psize);*/
 
 					//이후 case 2-1의 처리와 동일
 					Rotateright(ppnode);
 					inode->setcolor(BLACK);
 					ppnode->setcolor(RED);
 
-					int ppsize = ppnode->GetSize();
+					/*int ppsize = ppnode->GetSize();
 					int size_3 = inode->getright()->GetSize();
 					int size_4 = snode->GetSize();
 					inode->setsize(ppsize);
-					ppnode->setsize(size_3 + size_4 + 1);
+					ppnode->setsize(size_3 + size_4 + 1);*/
 					
+				}
+			}
+		}
+		else {
+			//삽입노드의 부모노드가  p^2의 오른쪽 자식인 경우
+			snode = ppnode->getleft();
+			if (snode->GetColor() == RED) {
+				pnode->setcolor(BLACK);
+				snode->setcolor(BLACK);
+				ppnode->setcolor(RED);
+				InsertHazard(ppnode);
+			}
+			else if (snode->GetColor() == BLACK) {
+				if (inode == pnode->getright()) {
+					Rotateleft(ppnode);
+					pnode->setcolor(BLACK);
+					ppnode->setcolor(RED);
+				}
+				else {
+					Rotateright(pnode);
+
+					Rotateleft(ppnode);
+					inode->setcolor(BLACK);
+					ppnode->setcolor(RED);
 				}
 			}
 		}
