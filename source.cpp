@@ -1,10 +1,12 @@
 #include "OSTree.h"
-using namespace std;
+
 
 int main(void) {
+
 	OSTree* tree = new OSTree;
-	for (int i = 0; i < 10; i++) {
+	for (int i = 1; i < 5; i++) {
 		cout << tree->OSInsert(i) << endl;
 	}
 
+	tree->show(tree->getroot());
 }

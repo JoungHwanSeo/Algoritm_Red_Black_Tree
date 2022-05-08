@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 class TreeNode
 {
 public:
@@ -22,6 +24,7 @@ public:
 	void setparent(TreeNode* parent);
 	void setsize(int size);
 	void setcolor(int color);
+	void setdata(int data);
 
 	void sizegrow(int delta);
 	//void AddLeft(TreeNode* left); //삽입노드는 RED

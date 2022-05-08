@@ -12,6 +12,22 @@ OSTree::OSTree() {
 	root = leaf;
 }
 
+Node* OSTree::getroot() {
+	return root;
+}
+
+void OSTree::show(Node* node) {
+	if (node == leaf)
+		return;
+	show(node->getleft());
+	int Color = node->GetColor();
+	if (Color == BLACK)
+		cout << "Black " << node->GetData() << endl;
+	else
+		cout << "Red " << node->GetData() << endl;
+	show(node->getright());
+}
+
 void OSTree::Rotateleft(Node* node) {
 	Node* cnode = node->getright();
 	node->setright(cnode->getleft());
@@ -80,7 +96,7 @@ int OSTree::OSInsert(int key) {
 	//이 while loop이 끝나면 삽입하는 쪽의 size는 하나씩 증가됨
 
 	Node* nnode = new Node(key, RED); //삽입할 새로운 노드 생성, 색깔은 RED
-	
+
 	if (pnode == nullptr) { //이번 원소가 처음 들어가는 경우
 		nnode->setcolor(BLACK);
 		root = nnode;

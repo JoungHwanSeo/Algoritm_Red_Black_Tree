@@ -6,6 +6,8 @@
 class OSTree {
 public:
 	OSTree();
+	Node* getroot();
+	void show(Node* node);
 	void Rotateleft(Node* node);
 	void Rotateright(Node* node);
 	int OSInsert(int key);

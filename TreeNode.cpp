@@ -58,6 +58,10 @@ void TreeNode::sizegrow(int delta) {
 	Size = Size + delta;
 }
 
+void TreeNode::setdata(int data) {
+	Data = data;
+}
+
 /*void TreeNode::AddLeft(TreeNode* left) {
 	if (Left == nullptr) {
 		if (Color == BLACK) {
