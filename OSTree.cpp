@@ -16,6 +16,43 @@ Node* OSTree::getroot() {
 	return root;
 }
 
+Node* OSTree::IsKeyExist_DEL(int key) {
+	Node* cnode = root;
+	while (cnode != leaf) {
+		int Current = cnode->GetData();
+		cnode->sizegrow(-1); //DEL과정에서 사용
+		if (Current == key) {
+			cnode->sizegrow(1); 
+			//삭제 대상 노드의 size는 유지... 어차피 delete될 노드임
+			return cnode;
+		}
+		else if (Current < key)
+			cnode = cnode->getright();
+		else
+			cnode = cnode->getleft();
+	}
+	return nullptr;
+}
+
+void OSTree::Connect(Node* del, Node* rep) { //rep은 이전 위치에서 전부 독립되어 나와야함
+	if (del->getparent() == nullptr) {
+		
+	}
+	/////////////
+
+}
+
+Node* OSTree::findmin_DEL(Node* rnode) {
+	Node* cnode = rnode;
+	Node* pnode = nullptr;
+	while (cnode != leaf) {
+		cnode->sizegrow(-1); //DEL과정에서 사용
+		pnode = cnode;
+		cnode = cnode->getleft();
+	}
+	return pnode;
+}
+
 void OSTree::show(Node* node) {
 	if (node == leaf)
 		return;
@@ -253,4 +290,52 @@ void OSTree::InsertHazard(Node* inode) {
 	}
 
 
+}
+
+int OSTree::OSDelete(int key) {
+	Node* dnode = IsKeyExist_DEL(key);
+
+	//Node* 
+
+	if (dnode == nullptr) {
+		return 0; // 해당 키가 존재하지 않음
+	}
+	else {
+		if (dnode->getleft() != leaf && dnode->getright() != leaf) {
+			//삭제 노드가 두개의 자식을 가지고 있는 경우
+			Node* repnode = findmin_DEL(dnode->getright()); 
+			// 삭제 노드의 오른쪽 서브트리서 가장 작은 값의 노드 포인터
+			dnode->setdata(repnode->GetData());
+			//삭제 대상의 노드의 key값만 대체 노드의 data로 대체됨
+			//실질적 삭제 대상은 대체노드 repnode임!
+			DeleteHazard(repnode, repnode->getright());
+		}
+		else {  // 이 경우는 삭제노드의 자식이 1개나 0개
+			if (dnode == dnode->getparent()->getleft()) {
+				if (dnode->getleft() != leaf) {
+					DeleteHazard(dnode, dnode->getleft(), true);
+				}
+				else  {  //이 경우는 getright()가 leaf인 경우도 포함됨!!!
+					DeleteHazard(dnode, dnode->getright(), true);
+				}
+			}
+				//DeleteHazard(dnode, , true);
+			else { // 삭제노드가 그 부모노드의 오른쪽 자식
+				if (dnode->getleft() != leaf) {
+					DeleteHazard(dnode, dnode->getleft(), false);
+				}
+				else
+					DeleteHazard(dnode, dnode->getright(), false);
+			}
+				//DeleteHazard(dnode, false);
+		}
+	}
+}
+
+void OSTree::DeleteHazard(Node* dnode,Node* cnode , bool left) {
+	if (left) { //삭제노드가 부모노드의 왼쪽 자식
+		if (dnode->GetColor() == RED) {
+
+		}
+	}
 }
