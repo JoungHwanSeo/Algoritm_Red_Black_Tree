@@ -7,7 +7,6 @@ int main(void) {
 
 	ifstream ifs("input.txt");
 	ofstream ofs("output.txt");
-	ofstream checkofs("checker.txt");
 
 	OSTree* tree = new OSTree;
 
@@ -44,7 +43,6 @@ int main(void) {
 
 	ifs.close();
 	ofs.close();
-	checkofs.close();
 
 
 	/*for (int i = 1; i <= 100; i++) {

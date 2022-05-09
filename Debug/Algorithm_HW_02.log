@@ -1,6 +1,4 @@
 ﻿  Checker.cpp
-C:\Users\jungh\source\repos\Algorithm_HW_02\Algorithm_HW_02\Checker.cpp(20,7): warning C4101: 'arr' :참조되지 않은 지역 변수입니다.
-  OSTree.cpp
   source.cpp
   코드를 생성하고 있습니다...
   Algorithm_HW_02.vcxproj -> C:\Users\jungh\source\repos\Algorithm_HW_02\Debug\Algorithm_HW_02.exe
