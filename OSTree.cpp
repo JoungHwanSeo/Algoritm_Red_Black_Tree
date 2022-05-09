@@ -505,18 +505,19 @@ void OSTree::DeleteHazard(Node* xnode, Node* Pnode) {
 				snode->setcolor(RED);
 				break;
 			}
-			else if (scolor == BLACK && rcolor == RED) {
+			else if (scolor == BLACK && lcolor == RED) {
 				//case 2
 				Rotateright(pnode);
 				pnode->setcolor(scolor);
 				snode->setcolor(pcolor);
-				rnode->setcolor(BLACK);
+				lnode->setcolor(BLACK);
 				break;
 			}
-			else if (scolor == BLACK && lcolor == RED && rcolor == BLACK) {
+			///생각해보니 대칭인 경우 l과 r의 색깔 조건도 바뀌어야 하네 ㅎㅎ
+			else if (scolor == BLACK && rcolor == RED && lcolor == BLACK) {
 				//case 3
 				Rotateleft(snode);
-				lnode->setcolor(BLACK);
+				rnode->setcolor(BLACK);
 				snode->setcolor(RED);
 				//문제노드는 여전히 x
 				continue;
@@ -541,8 +542,20 @@ void OSTree::DeleteHazard(Node* xnode, Node* Pnode) {
 	}
 }
 
-int OSTree::OSselect(int i) {
-	if
+int OSTree::OSselect(Node* node,int i) {
+	if (node->GetSize() < i)
+		return 0;
+	else {
+		//i가 tree에 있는 데이터의 개수 이하일 때
+		int order = node->getleft()->GetSize() + 1;
+		//해당 노드(서브트리의 루트)가 트리에서 몇번째로 작은가
+		if (i == order)
+			return node->GetData();
+		else if (i < order)
+			return OSselect(node->getleft(), i);
+		else
+			return OSselect(node->getright(), i - order);
+	}
 }
 
 /*int OSTree::OSDelete(int key) {

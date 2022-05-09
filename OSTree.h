@@ -26,7 +26,7 @@ public:
 
 	void DeleteHazard(Node* xnode,Node* Pnode);
 
-	int OSselect(int i);
+	int OSselect(Node* node,int i);
 	
 	//void DeleteHazard(Node* pnode, Node* cnode,int dcolor ,bool left);
 	//left가 true이면 삭제 노드가 부모 노드의 왼쪽자식인 경우

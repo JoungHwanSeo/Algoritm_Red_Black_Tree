@@ -4,19 +4,22 @@
 int main(void) {
 
 	OSTree* tree = new OSTree;
-	for (int i = 1; i <= 10; i++) {
-		cout << tree->OSInsert(i) << endl;
+	for (int i = 1; i <= 100; i++) {
+		//cout << tree->OSInsert(i) << endl;
+		tree->OSInsert(i);
 	}
 	//tree->show(tree->getroot());
 
-	for (int i = 4; i <= 7; i++) {
+	for (int i = 11; i <= 100; i++) {
 		tree->OSDelete(i);
 		//tree->show(tree->getroot());
 		//cout << "--------------------------" << endl << endl;
 
 	}
 
-	tree->show(tree->getroot());
+	cout << tree->OSselect(tree->getroot(), 45);
+
+	//tree->show(tree->getroot());
 
 	/*for (int i = 3; 3 <= 5; i++) {
 		tree->OSDelete(i);
