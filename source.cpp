@@ -10,14 +10,16 @@ int main(void) {
 	}
 	//tree->show(tree->getroot());
 
-	for (int i = 11; i <= 100; i++) {
+	for (int i = 11; i <= 20; i++) {
 		tree->OSDelete(i);
 		//tree->show(tree->getroot());
 		//cout << "--------------------------" << endl << endl;
 
 	}
 
-	cout << tree->OSselect(tree->getroot(), 45);
+	//cout << tree->OSselect(tree->getroot(), 45);
+	//for (int i = 1; i <= 20; i++)
+	//	cout << tree->OSRank(tree->getroot(), i) << endl << endl;
 
 	//tree->show(tree->getroot());
 

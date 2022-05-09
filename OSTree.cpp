@@ -16,6 +16,7 @@ Node* OSTree::getroot() {
 	return root;
 }
 
+
 Node* OSTree::IsKeyExist_DEL(int key) {
 	Node* cnode = root;
 	while (cnode != leaf) {
@@ -555,6 +556,22 @@ int OSTree::OSselect(Node* node,int i) {
 			return OSselect(node->getleft(), i);
 		else
 			return OSselect(node->getright(), i - order);
+	}
+}
+
+int OSTree::OSRank(Node* node, int key) {
+	Node* fnode = IsKeyExist(node, key);
+	if (fnode == nullptr)
+		return 0;
+	else {
+		int order = fnode->getleft()->GetSize() + 1;
+		Node* tmpnode = fnode;
+		while (tmpnode != root) {
+			if (tmpnode == tmpnode->getparent()->getright())
+				order = order + tmpnode->getparent()->getleft()->GetSize() + 1;
+			tmpnode = tmpnode->getparent();
+		}
+		return order;
 	}
 }
 

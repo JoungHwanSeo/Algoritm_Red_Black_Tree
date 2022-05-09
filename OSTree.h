@@ -1,5 +1,6 @@
 #pragma once
 #include "TreeNode.h"
+#include "function.h"
 
 
 
@@ -7,6 +8,7 @@ class OSTree {
 public:
 	OSTree();
 	Node* getroot();
+	//Node* IsKeyExist(Node* node,int key);
 	Node* IsKeyExist_DEL(int key); //없는경우 nullptr return, 있으면 해당 노드 포인터 return
 	//이는 Delete과정에서 사용하여 size가 줄어듦...
 	//void Connect(Node* pnode,Node* dnode,Node* cnode,bool pleft); 
@@ -27,6 +29,8 @@ public:
 	void DeleteHazard(Node* xnode,Node* Pnode);
 
 	int OSselect(Node* node,int i);
+
+	int OSRank(Node* node, int key);
 	
 	//void DeleteHazard(Node* pnode, Node* cnode,int dcolor ,bool left);
 	//left가 true이면 삭제 노드가 부모 노드의 왼쪽자식인 경우
