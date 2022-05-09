@@ -12,6 +12,16 @@ OSTree::OSTree() {
 	root = leaf;
 }
 
+int OSTree::traverse(Node* node, int* val) {
+	Node* cnode = node;
+	if (cnode == leaf)
+		return *val;
+	traverse(cnode->getleft(), val);
+	(*val)++;
+	traverse(cnode->getright(), val);
+	return *val;
+}
+
 Node* OSTree::getroot() {
 	return root;
 }
@@ -158,7 +168,7 @@ int OSTree::OSInsert(int key) {
 		//
 		int Current = cnode->GetData();
 		if (Current == key) {
-			printf("Key overalp\n");
+			//printf("Key overalp\n");
 			return 0; // 이미 있는 원소일시 0을 return
 		}
 		if (Current > key) {

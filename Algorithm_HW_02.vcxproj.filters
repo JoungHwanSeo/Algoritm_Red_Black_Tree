@@ -27,6 +27,9 @@
     <ClCompile Include="function.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Checker.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TreeNode.h">
@@ -36,6 +39,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="function.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Checker.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,12 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Checker.cpp" />
     <ClCompile Include="function.cpp" />
     <ClCompile Include="OSTree.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="TreeNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Checker.h" />
     <ClInclude Include="function.h" />
     <ClInclude Include="OSTree.h" />
     <ClInclude Include="TreeNode.h" />

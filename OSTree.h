@@ -7,6 +7,9 @@
 class OSTree {
 public:
 	OSTree();
+
+	int traverse(Node* node,int* val); // val=0인 값을 넣어 노드가 몇개인지 계산
+
 	Node* getroot();
 	//Node* IsKeyExist(Node* node,int key);
 	Node* IsKeyExist_DEL(int key); //없는경우 nullptr return, 있으면 해당 노드 포인터 return
