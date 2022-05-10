@@ -10,10 +10,7 @@ TreeNode::TreeNode(int data, int color)
 	Size = 1;
 }
 
-/*TreeNode::~TreeNode() {
-	//if(Left != nullptr)
-	//	delete 
-}*/
+
 
 int TreeNode::GetSize() {
 	return Size;

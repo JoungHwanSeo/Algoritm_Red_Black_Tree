@@ -1,14 +1,22 @@
+#include <filesystem>
 #include "OSTree.h"
 #include "fstream"
 #include "string"
 #include "Checker.h"
 
+
 int main(void) {
 
-	ifstream ifs("input.txt");
+
+
+	string inputf = "input.txt";
+
+	ifstream ifs(inputf);
 	ofstream ofs("output.txt");
 
 	OSTree* tree = new OSTree;
+
+	
 
 	string read;
 	int val;
@@ -22,7 +30,7 @@ int main(void) {
 
 	ifs.close();
 
-	ifs.open("input.txt");
+	ifs.open(inputf);
 
 	while (!ifs.eof()) {  
 		ifs >> read;
@@ -39,37 +47,11 @@ int main(void) {
 			ofs << (tree->OSRank(tree->getroot(), val)) << endl;
 	}
 
-	Checker("input.txt", "output.txt");
+	Checker(inputf, "output.txt");
 
 	ifs.close();
 	ofs.close();
-
-
-	/*for (int i = 1; i <= 100; i++) {
-		//cout << tree->OSInsert(i) << endl;
-		tree->OSInsert(i);
-	}
-	//tree->show(tree->getroot());
-
-	for (int i = 11; i <= 20; i++) {
-		tree->OSDelete(i);
-		//tree->show(tree->getroot());
-		//cout << "--------------------------" << endl << endl;
-
-	}*/
-
-	//cout << tree->OSselect(tree->getroot(), 45);
-	//for (int i = 1; i <= 20; i++)
-	//	cout << tree->OSRank(tree->getroot(), i) << endl << endl;
-
-	//tree->show(tree->getroot());
-
-	/*for (int i = 3; 3 <= 5; i++) {
-		tree->OSDelete(i);
-	}
-	tree->show(tree->getroot());*/
-
-	//cout << tree->findmin(tree->getroot())->GetData();
+	delete tree;
 
 }
 

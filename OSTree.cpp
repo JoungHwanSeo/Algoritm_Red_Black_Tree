@@ -5,8 +5,6 @@ OSTree::OSTree() {
 	//leaf는 parent가 있으면 안됨... 모두 연결되어 있어서
 	leaf = new Node();
 
-	/// <summary>
-	/// 이부분 때문에 문제 생길 수도 있을듯... 디버깅시 확인해보기
 	leaf->setsize(0); //리프노드는 size 0로 설정
 	/// </summary>
 	root = leaf;
@@ -161,6 +159,53 @@ int OSTree::OSInsert(int key) {
 	Node* cnode = root;
 	Node* pnode = nullptr; 
 
+	bool InsertSucess = true;
+
+	//우선 데이터가 미리 있는지 확인
+
+	//cnode가 leaf, 즉 아무 데이터도 없는 경우 InsertSucess는 true임.
+	while (cnode != leaf) { //삽입할 위치를 찾아가는 과정
+		pnode = cnode;
+		//
+		//cnode->sizegrow(1); //재귀적으로 각 노드의 size 1씩 증가
+		//
+		int Current = cnode->GetData();
+		if (Current == key) {
+			//printf("Key overalp\n");
+			//return 0; // 이미 있는 원소일시 0을 return
+			InsertSucess = false;
+			break;
+		}
+		else if (Current > key) {
+			cnode = cnode->getleft();
+		}
+		else {
+			cnode = cnode->getright();
+		}
+	}
+
+	cnode = root;
+	pnode = nullptr;
+
+	if (!InsertSucess)
+		return 0; // 중복된 원소 존재
+	else {
+		while (cnode != leaf) { //삽입할 위치를 찾아가는 과정
+			pnode = cnode;
+			//
+			cnode->sizegrow(1); //재귀적으로 각 노드의 size 1씩 증가
+			//
+			int Current = cnode->GetData();
+			//해당 else에 들어오면 Current == key인 경우는 없음
+			if (Current > key) {
+				cnode = cnode->getleft();
+			}
+			else {
+				cnode = cnode->getright();
+			}
+		}
+	}
+
 	while (cnode != leaf) { //삽입할 위치를 찾아가는 과정
 		pnode = cnode; 
 		//
@@ -212,7 +257,7 @@ int OSTree::OSInsert(int key) {
 	else
 		InsertHazard(nnode); //삽입시 생기는 문제를 여기서 해결
 	
-	return key;
+	return key; //만약 맨 위에서 Tree가 아무것도 없으면 
 }
 
 //InsertHazard는 최소한 root노드가 이미 존재한 상태에서 삽입하는 case 
@@ -345,84 +390,87 @@ void OSTree::Connectonly(Node* dnode, Node* cnode) {
 }
 
 int OSTree::OSDelete(int key) {
-	Node* dnode = IsKeyExist_DEL(key);
 
-	if (dnode == nullptr) //해당 키가 존재하지 않음
-		return 0;
-	else {
-		int dcolor = dnode->GetColor();
+	bool DeleteSuccess = false;
 
-		Node* xnode;
+	Node* tmpnode = root;
 
-		///추가
-		Node* pnode = dnode->getparent();
-		///xnode가 leaf로 들어간 경우, parent를 찾을 수 없음...
-		///추가
+	while (tmpnode != leaf) {
+		int Current = tmpnode->GetData();
 
-		///자식이 없거나 1개인 경우
-		//자식이 아예 없는 경우는 xnode를 한칸 위로 올려야함
-		//아닌듯 ㅋㅋㅋㅋㅋㅋ
-		//이렇게 해야 l과 r도 leaf가 아닌 노드임을 보장할 수 있음...
-		/////아니라고 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-
-		/*if (dnode->getleft() == leaf && dnode->getright() == leaf) {
-			Connectonly(dnode, dnode->getleft());
+		if (Current == key) {
+			DeleteSuccess = true; // key를 찾아야 비로소 true
+			break;
 		}
-		else if (dnode->getleft() == leaf && dnode->getright() != leaf) {
-			xnode = dnode->getright();
-			Connectonly(dnode, dnode->getright());
-		}
-		else if (dnode->getleft() != leaf && dnode->getright() == leaf) {
-			xnode = dnode->getleft();
-			Connectonly(dnode, dnode->getleft());
-		}
-		else {
-			//자식이 두개인 경우
-		}*/
-
-		if (dnode->getleft() == leaf) {
-			xnode = dnode->getright();
-			Connectonly(dnode, dnode->getright());
-			//자식이 없는 경우도 ConnectOnly에서 커버함
-		}
-		else if (dnode->getright() == leaf) {
-			xnode = dnode->getleft();
-			Connectonly(dnode, dnode->getleft());
-		}
-		else { // 자식이 두개인 경우
-			Node* repnode; // 실질적 삭제 대상 노드
-			repnode = findmin_DEL(dnode->getright());
-			dcolor = repnode->GetColor();
-
-			pnode = repnode->getparent();
-			//이 경우 pnode는 갱신
-
-			dnode->setdata(repnode->GetData());
-			//dnode의 key가 대체노드의 데이터로 대체됨
-			//실질적 삭제는 repnode임
-
-			xnode = repnode->getright();
-
-			Connectonly(repnode, repnode->getright());
-
-			dnode = repnode; //rep node가 삭제되어야 함
-
-		}
-		delete dnode;
-		if (dcolor == BLACK) {
-			if (xnode->GetColor() == RED) {
-				xnode->setcolor(BLACK);
-			}
-			else //둘 다 BLACK인 경우만 DeleteHazard 호출
-				DeleteHazard(xnode,pnode); //xnode는 leaf일수도 있음
-		}
-
-		root->setcolor(BLACK);
-		//마지막에 루트 black
-
-		return key;
+		else if (Current < key)
+			tmpnode = tmpnode->getright();
+		else
+			tmpnode = tmpnode->getleft();
 	}
+	//cout << "Not Found" << endl;
 
+	Node* dnode;
+
+	if (!DeleteSuccess) //삭제 대상이 없는 경우
+		return 0;
+	else {  //삭제 대상이 있는 경우
+		dnode = IsKeyExist_DEL(key);  //이걸로 size조절함
+		if (dnode == nullptr) //해당 키가 존재하지 않음
+			return 0;  //사실 여기로 빠질 일은 없음..
+		else {
+			int dcolor = dnode->GetColor();
+
+			Node* xnode;
+
+			///추가
+			Node* pnode = dnode->getparent();
+			///xnode가 leaf로 들어간 경우, parent를 찾을 수 없음...
+
+			if (dnode->getleft() == leaf) {
+				xnode = dnode->getright();
+				Connectonly(dnode, dnode->getright());
+				//자식이 없는 경우도 ConnectOnly에서 커버함
+			}
+			else if (dnode->getright() == leaf) {
+				xnode = dnode->getleft();
+				Connectonly(dnode, dnode->getleft());
+			}
+			else { // 자식이 두개인 경우
+				Node* repnode; // 실질적 삭제 대상 노드
+				repnode = findmin_DEL(dnode->getright());
+				dcolor = repnode->GetColor();
+
+				pnode = repnode->getparent();
+				//이 경우 pnode는 갱신
+
+				dnode->setdata(repnode->GetData());
+				//dnode의 key가 대체노드의 데이터로 대체됨
+				//실질적 삭제는 repnode임
+
+				xnode = repnode->getright();
+
+				Connectonly(repnode, repnode->getright());
+
+				dnode = repnode; //rep node가 삭제되어야 함
+
+			}
+			delete dnode;
+			if (dcolor == BLACK) {
+				if (xnode->GetColor() == RED) {
+					xnode->setcolor(BLACK);
+				}
+				else //둘 다 BLACK인 경우만 DeleteHazard 호출
+					DeleteHazard(xnode, pnode); //xnode는 leaf일수도 있음
+			}
+
+			root->setcolor(BLACK);
+			//마지막에 루트 black
+
+			return key;
+		}
+	}
+		
+	
 }
 
 void OSTree::DeleteHazard(Node* xnode, Node* Pnode) {
@@ -584,214 +632,3 @@ int OSTree::OSRank(Node* node, int key) {
 		return order;
 	}
 }
-
-/*int OSTree::OSDelete(int key) {
-	Node* dnode = IsKeyExist_DEL(key);
-
-	//Node* 
-
-	if (dnode == nullptr) {
-		return 0; // 해당 키가 존재하지 않음
-	}
-	else {
-
-		//여기서 Connect까지 하고, 그 뒤의 상황에서 Hazard처리 하기!!!
-
-		if (dnode->getleft() != leaf && dnode->getright() != leaf) {
-			//삭제 노드가 두개의 자식을 가지고 있는 경우
-			Node* repnode = findmin_DEL(dnode->getright()); 
-			// 삭제 노드의 오른쪽 서브트리서 가장 작은 값의 노드 포인터
-			dnode->setdata(repnode->GetData());
-			//삭제 대상의 노드의 key값만 대체 노드의 data로 대체됨
-			//실질적 삭제 대상은 대체노드 repnode임!
-			//DeleteHazard(repnode, repnode->getright());
-			Connect(repnode->getparent(), repnode, repnode->getright(), true);
-			DeleteHazard(repnode->getparent(), repnode->getright(), repnode->GetColor(), true);
-			
-			//디버깅시 유심히 보기
-			delete repnode;
-
-		}
-		else {  // 이 경우는 삭제노드의 자식이 1개나 0개
-			if (dnode == dnode->getparent()->getleft()) {
-				if (dnode->getleft() != leaf) {
-					
-
-					Connect(dnode->getparent(), dnode, dnode->getleft(), true);
-					DeleteHazard(dnode->getparent(), dnode->getleft(), dnode->GetColor(), true);
-					//DeleteHazard(dnode, dnode->getleft(), true);
-				}
-				else  {  //이 경우는 getright()가 leaf인 경우도 포함됨!!!
-					//DeleteHazard(dnode, dnode->getright(), true);
-					//여기서 Connect하려면 삭제 노드가 자식을 가지고 있어야 함... 해당 조건 추가하기!!!!
-				
-					if (dnode->getright() == leaf) { //dnode가 자식을 갖지 않는 경우
-						dnode->getparent()->setleft(leaf);
-						Node* pnode = dnode->getparent();
-						if(pnode == pnode->getparent()->getleft())
-					}
-
-					Connect(dnode->getparent(), dnode, dnode->getright(), true);
-					DeleteHazard(dnode->getparent(), dnode->getright(), dnode->GetColor(), true);
-				}
-			}
-				//DeleteHazard(dnode, , true);
-			else { // 삭제노드가 그 부모노드의 오른쪽 자식
-				if (dnode->getleft() != leaf) {
-					//DeleteHazard(dnode, dnode->getleft(), false);
-					Connect(dnode->getparent(), dnode, dnode->getleft(), false);
-					DeleteHazard(dnode->getparent(), dnode->getleft(), dnode->GetColor(), false);
-				}
-				else {
-					Connect(dnode->getparent(), dnode, dnode->getright(), false);
-					DeleteHazard(dnode->getparent(), dnode->getright(), dnode->GetColor(), false);
-					//DeleteHazard(dnode, dnode->getright(), false);
-				}
-					
-			}
-			//디버깅시 유심히 보기
-			delete dnode;
-				//DeleteHazard(dnode, false);
-		}
-	}
-}
-
-void OSTree::DeleteHazard(Node* pnode, Node* cnode, int dcolor, bool left) {
-	if (left) {
-		if (dcolor == RED) {
-			//아무것도 할필요 없음
-		}
-		else {
-			//삭제노드가 BLACK일시
-			if (cnode->GetColor() == RED) {
-				cnode->setcolor(BLACK);
-			}
-			else {
-				//삭제노드와 그 자식 모두 BLACK
-				Node* pnode = cnode->getparent();
-				Node* snode = pnode->getright();
-				Node* lnode = snode->getleft();
-				Node* rnode = snode->getright();
-				int pcolor = pnode->GetColor();
-				int scolor = snode->GetColor();
-				int lcolor = lnode->GetColor();
-				int rcolor = rnode->GetColor();
-				if (pcolor == RED && !snode && !lnode && !rnode) {
-					//case 1
-					//BLACK은 0... P만 red인 경우
-					pnode->setcolor(BLACK);
-					snode->setcolor(RED);
-				}
-				else if (scolor == BLACK && rcolor == RED) {
-					//case 2
-					Rotateleft(pnode);
-					pnode->setcolor(scolor);
-					snode->setcolor(pcolor);
-					rnode->setcolor(BLACK);
-				}
-				else if (!scolor && lcolor && !rcolor) {
-					//case 3
-					Rotateright(snode);
-					lnode->setcolor(scolor);
-					snode->setcolor(lcolor);
-
-					int changedscolor = lcolor;
-					int changedlcolor = scolor;
-
-					//여기서는 case 2와 같이 처리
-					Rotateleft(pnode);
-					pnode->setcolor(changedlcolor);
-					lnode->setcolor(pcolor);
-					snode->setcolor(BLACK);
-				}
-				else if (!pcolor && !scolor && !lcolor && !rcolor) {
-					//case 4 전부 BLACK
-					snode->setcolor(RED);
-					//이 경우 dnode의 문제가 pnode로 올라감
-					if (pnode == pnode->getparent()->getleft()) {
-						//BLACK이어야 실질적 hazard처리가 가능
-						DeleteHazard(pnode->getparent(), pnode, BLACK, true);
-					}
-					else {
-						DeleteHazard(pnode->getparent(), pnode, BLACK, false);
-					}
-				}
-				else {
-					//case 5
-					Rotateleft(pnode);
-					pnode->setcolor(scolor);
-					snode->setcolor(pcolor);
-					//여기서 case1 ~3으로 이동한다.
-					/////이게 맞나???
-					DeleteHazard(pnode, cnode, BLACK, true);
-				}
-			}
-		}
-	}
-	//delete 
-}*/
-
-/*void OSTree::DeleteHazard(Node* dnode,Node* cnode , bool left) {
-	//delete dnode는 맨 마지막에 실행!!!!!!!!!!!
-	int COLOR = dnode->GetColor();
-	if (left) { //삭제노드가 부모노드의 왼쪽 자식
-		Connect(dnode->getparent(), dnode, cnode, true);
-		//일단 RB상관 없이 노드 삭제하고 이어줌
-		if (COLOR == RED) {
-			//아무것도 할 필요가 없음!
-		}
-		else { //삭제한 노드가 BLACK일시
-			if (cnode->GetColor() == RED) {
-				cnode->setcolor(BLACK);
-			}
-			else { //삭제노드와 그 자식노드가 모두 BLACK
-				Node* pnode = cnode->getparent();
-				Node* snode = pnode->getright();
-				Node* lnode = snode->getleft();
-				Node* rnode = snode->getright();
-				int pcolor = pnode->GetColor();
-				int scolor = snode->GetColor();
-				int lcolor = lnode->GetColor();
-				int rcolor = rnode->GetColor();
-				if (pcolor == RED && !snode && !lnode && !rnode) {
-					//case 1
-					//BLACK은 0... P만 red인 경우
-					pnode->setcolor(BLACK);
-					snode->setcolor(RED);
-				}
-				else if (scolor == BLACK && rcolor == RED) {
-					//case 2
-					Rotateleft(pnode);
-					pnode->setcolor(scolor);
-					snode->setcolor(pcolor);
-					rnode->setcolor(BLACK);
-				}
-				else if (!scolor && lcolor && !rcolor) {
-					//case 3
-					Rotateright(snode);
-					lnode->setcolor(scolor);
-					snode->setcolor(lcolor);
-					
-					int changedscolor = lcolor;
-					int changedlcolor = scolor;
-
-					//여기서는 case 2와 같이 처리
-					Rotateleft(pnode);
-					pnode->setcolor(changedlcolor);
-					lnode->setcolor(pcolor);
-					snode->setcolor(BLACK);
-				}
-				else if (!pcolor && !scolor && !lcolor && !rcolor) {
-					//case 4 전부 BLACK
-					snode->setcolor(RED);
-					//이 경우 dnode의 문제가 pnode로 올라감
-					if (pnode == pnode->getparent()->getright()) {
-
-					}
-				}
-			}
-		}
-	}
-
-	delete dnode;
-}*/

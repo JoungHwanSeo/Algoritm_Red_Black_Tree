@@ -132,7 +132,6 @@ void Checker(string inputfile, string outputfile) {
 		}
 
 		ofs << "연산 : " << func << " " << val << " 결과 : " << oval << " check 결과 : " << result << endl;
-
 	}
 
 
